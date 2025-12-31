@@ -25,6 +25,7 @@ def menu():
     ketik("[1] - Tebak Angka ")
     ketik("[2] - Ular Nokia ")
     ketik("[3] - Coming Soon ")
+    ketik("[0] - Keluar ")
     return input("Pilih Menu : ")
 
 def intro():
@@ -43,7 +44,7 @@ while True:
         if tampilkan_intro:
             intro()
             tampilkan_intro = False
-        
+
         os.system("clear")
         angka_random = random.randint(1, 1000)
 
@@ -92,18 +93,18 @@ while True:
         os.system("clear")
         ketik("===Ular Nokia===")
         time.sleep(1)
-        
+
         border_buffer = []
-        
+
         os.system("clear")
         print("+" + "-" * 20 + "+")
         for y in range(10):
             print("|" + " " * 20 + "|")
         print("+" + "-" * 20 + "+")
         print("Gunakan W / A / S / D untuk gerak, 9 untuk keluar.")
-        
+
         time.sleep(0.5)
-        
+
         os.system("clear")
 
         lebar, tinggi = 20, 10
@@ -112,14 +113,14 @@ while True:
         makanan = (random.randint(0, lebar-1), random.randint(0, tinggi-1))
 
         def print_papan():
-            sys.stdout.write("\033[s")  
-            
+            sys.stdout.write("\033[s")
+
             sys.stdout.write("\033[1;1H")
-            
+
             print("+" + "-" * lebar + "+", end="")
-            
+
             for y in range(tinggi):
-                sys.stdout.write("\033[{};1H".format(y + 2)) 
+                sys.stdout.write("\033[{};1H".format(y + 2))
                 print("|", end="")
                 for x in range(lebar):
                     if (x, y) == ular[0]:
@@ -131,44 +132,44 @@ while True:
                     else:
                         print(" ", end="")
                 print("|", end="")
-            
-           
+
+
             sys.stdout.write("\033[{};1H".format(tinggi + 2))
             print("+" + "-" * lebar + "+", end="")
-            
-            
+
+
             sys.stdout.write("\033[{};1H".format(tinggi + 4))
-            
+
             if not hasattr(print_papan, 'counter'):
                 print_papan.counter = 0
-            
+
             print_papan.counter += 1
-            
+
             if print_papan.counter % 8 < 5:
                 print("Gunakan W / A / S / D untuk gerak, 9 untuk keluar." + " " * 10, end="")
             else:
                 print(" " * 60, end="")
-            
+
             sys.stdout.write("\033[u")
             sys.stdout.flush()
 
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
-        
+
         try:
             tty.setraw(fd)
-            
+
             last_move_time = time.time()
             move_delay = 0.4
             game_over = False
-            
-            
+
+
             print_papan()
-            
+
             while not game_over:
                 current_time = time.time()
                 time_since_last_move = current_time - last_move_time
-                
+
                 if time_since_last_move < move_delay:
                     timeout = move_delay - time_since_last_move
                     if select.select([sys.stdin], [], [], timeout)[0]:
@@ -183,9 +184,9 @@ while True:
                             arah = "KANAN"
                         elif gerak == "9":
                             game_over = True
-                    
+
                     current_time = time.time()
-                
+
                 if current_time - last_move_time >= move_delay:
                     kepala_x, kepala_y = ular[0]
                     if arah == "ATAS":
@@ -209,10 +210,10 @@ while True:
                             makanan = (random.randint(0, lebar-1), random.randint(0, tinggi-1))
                         else:
                             ular.pop()
-                        
+
                         print_papan()
                         last_move_time = current_time
-                    
+
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
@@ -220,4 +221,11 @@ while True:
         os.system("clear")
         ketik("Coming Soon...")
         time.sleep(2)
-                    
+
+    elif pilih_menu == "0":
+        os.system("clear")
+        time.sleep(1)
+        ketik("Sampai Jumpa")
+        time.sleep(1)
+        os.system("clear")
+        break
